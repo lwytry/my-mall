@@ -7,7 +7,7 @@
         <home-swiper :banners="banners"/>
         <home-recommend :recommends="recommends"/>
         <feature-view/>
-        <tab-control class="tab-control" :titles="['流行', '新款', '精选']" @tabClick="tabClick"/>
+        <tab-control ref="tabControl" :titles="['流行', '新款', '精选']" @tabClick="tabClick"/>
         <goods-list :goods="showGoods"/>
     </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
@@ -26,7 +26,7 @@
     import BackTop from 'components/content/backTop/BackTop'
 
     import {getHomeMultidata, getHomeGoods} from 'network/home'
-
+    import {debounce} from "common/utils";
 
     export default {
         name: "Home",
@@ -51,7 +51,8 @@
                   'sell': {page: 0, list:[]},
               },
               currentType: 'pop',
-              isShowBackTop: false
+              isShowBackTop: false,
+              tabOffsetTop: 0,
           }
         },
         created() {
@@ -61,7 +62,12 @@
             this.getGoods('sell')
         },
         mounted() {
+            this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
 
+            const refresh = debounce(this.$refs.scroll.refresh(), 500)
+            this.$bus.$on('itemImageLoad', () => {
+                refresh()
+            })
         },
         methods: {
             /**
@@ -133,11 +139,6 @@
         left: 0;
         right: 0;
         top: 0;
-        z-index: 3;
-    }
-    .tab-control {
-        /*position: sticky;*/
-        top: 44px;
         z-index: 3;
     }
     .content {
