@@ -36,16 +36,21 @@
             this.scroll.on('scroll', position => {
                 this.$emit('scroll', position)
             })
-            this.scroll.on('pullingUp', () => {
-                this.$emit('pullingUp')
-            })
+            if (this.pullUpLoad) {
+                this.scroll.on('pullingUp', () => {
+                    this.$emit('pullingUp')
+                })
+            }
         },
         methods: {
             scrollTo(x, y, time = 300) {
-                this.scroll.scrollTo(x, y, time)
+                this.scroll && this.scroll.scrollTo(x, y, time)
             },
             finishPullUp() {
-                this.scroll.finishPullUp()
+                this.scroll && this.scroll.finishPullUp()
+            },
+            refresh() {
+                this.scroll && this.scroll.refresh()
             }
         }
     }
