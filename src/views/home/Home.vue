@@ -55,6 +55,7 @@
               isShowBackTop: false,
               tabOffsetTop: 0,
               isTabFixed: false,
+              saveY: 0,
           }
         },
         created() {
@@ -124,6 +125,16 @@
             showGoods() {
                 return this.goods[this.currentType].list
             }
+        },
+        destroyed() {
+            console.log('des');
+        },
+        activated() {
+            this.$refs.scroll.scrollTo(0, saveY, 0)
+            this.$refs.scroll.refresh()
+        },
+        deactivated() {
+            this.saveY = this.$refs.scroll.getScrollY()
         }
     }
 </script>
